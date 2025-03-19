@@ -51,8 +51,6 @@ rag_template = """[INST] Refer to the background document and answer the questio
 Background: {document}
 
 Question: {question} [/INST] The answer is:"""
-prompt = rag_template.format_map(dict(document=relevant_doc,question=question))
-print(prompt)
 
 relevant_embedding = datastore[1][top1_doc_index]
 
