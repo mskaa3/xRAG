@@ -33,7 +33,7 @@ export APPTAINER_TMPDIR=$TMPDIR/apptainer/
 export APPTAINER_CACHEDIR=$TMPDIR/apptainer/
 export APPTAINER_TRANSFORMERS_CACHE=$APPTAINER_TMPDIR
 
-GENERATOR="python3 app.py"
+GENERATOR="python3 run_tutorial.py"
 
 # Execute in Apptainer (Singularity) container
 APPTAINER_TMPDIR=/dev/shm/$SLURM_JOB_ID APPTAINER_CACHEDIR=/dev/shm/$SLURM_JOB_ID \

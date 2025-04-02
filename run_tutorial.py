@@ -15,7 +15,7 @@ llm_tokenizer = AutoTokenizer.from_pretrained(llm_name_or_path,add_eos_token=Fal
 llm.set_xrag_token_id(llm_tokenizer.convert_tokens_to_ids(XRAG_TOKEN))
 print(XRAG_TOKEN)
 
-question = """What is the advantage of the CORY method over single-agent RL method?"""
+question = """What kind of task IMBD dataset is used for?"""
 # documents = [
 #     'Alvin and the Chipmunks | " Alvin and the Chipmunks, originally David Seville and the Chipmunks or simply The Chipmunks, are an American animated virtual band created by Ross Bagdasarian for a novelty record in 1958. The group consists of three singing animated anthropomorphic chipmunks named Alvin, Simon, and Theodore. They are managed by their human adoptive father, David ""Dave"" Seville. Bagdasarian provided the group\'s voices sped up to create high-pitched squeaky voices (which wasn\'t entirely new to him, having worked on ""Witch Doctor"" earned the record two Grammy Awards for engineering). ""The Chipmunk Song"" became a number-one single in the United States. After Bagdasarian died in 1972, the characters’ voices were provided by his son Ross Bagdasarian Jr. and the latter\'s wife Janice Karman in the subsequent incarnations of "',
 #     "Jamie Lee Curtis |  Jamie Lee Curtis (born November 22, 1958) is an American actress and writer. She is the recipient of several accolades, including a British Academy Film Award, two Golden Globe Awards and a star on the Hollywood Walk of Fame in 1998. Curtis made her film acting debut as Laurie Strode in John Carpenter's horror film Halloween (1978), which established her as a scream queen, and she thereafter appeared in a string of horror films, including The Fog, Prom Night, Terror Train (all 1980) and Roadgames (1981). She reprised the role of Laurie in the sequels Halloween II (1981), Halloween H20: 20 Years Later (1998), Halloween: Resurrection (2002), Halloween (2018), and Halloween Kills (2021). Her filmography is largely characterized by independent film that have been box-office successes, with 8 of her lead-actress credits ",
@@ -70,7 +70,7 @@ input_ids = llm_tokenizer(prompt,return_tensors='pt').input_ids.to(device)
 generated_output = llm.generate(
         input_ids = input_ids,
         do_sample=False,
-        max_new_tokens=20,
+        max_new_tokens=256,
         pad_token_id=llm_tokenizer.pad_token_id,
         retrieval_embeds = relevant_embedding.unsqueeze(0),
     )
