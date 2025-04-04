@@ -1,6 +1,21 @@
 ## third-party
 from transformers import AutoTokenizer
 import torch
+from datasets import load_dataset
+import pandas as pd
+import json
+from uuid import uuid4
+
+import numpy as np
+from tqdm import tqdm
+import os
+import shutil
+import subprocess
+import time
+
+from copy import deepcopy
+from datasets import Dataset, DatasetDict, load_dataset
+
 
 ## own
 from src.model import SFR,XMistralForCausalLM
@@ -32,6 +47,65 @@ rag_template = """[INST] Refer to the background document and answer the questio
 Background: {document}
 
 Question: {question} [/INST] The answer is:"""
+
+
+
+
+
+def is_rclone_installed():
+    return shutil.which('rclone') is not None
+
+
+def upload(source: str, destination: str, verbose: bool = False) -> None:
+    if not is_rclone_installed():
+        raise RuntimeError('rclone is not installed')
+
+    rclone_remote = os.getenv('RCLONE_REMOTE_CONFIG', None)
+
+    if rclone_remote is None:
+        raise RuntimeError('RCLONE_REMOTE_CONFIG is not set')
+
+    flags = "--progress" if verbose else ""
+
+    if os.path.isfile(source):
+        destination = os.path.join(destination, os.path.basename(source))
+
+        # When uploading a single file, I get 'Access Denied' errors.
+        # Adding this flag solves that problem. I guess I don't have some permissions connected to bucket checks.
+        # ~Bartosz Żuk 26.06.2024
+        flags = f'{flags} --s3-no-check-bucket'
+
+    start = time.time()
+    command = f'rclone copyto {source} {rclone_remote}:{destination} {flags}'
+
+    subprocess.run(command, shell=True, check=True)
+
+    print(f'Uploaded {source} to {destination} in {time.time() - start:.2f} seconds')
+
+
+def download(source: str, destination: str = None, verbose: bool = False, exclude: str = None) -> str:
+    if not is_rclone_installed():
+        raise RuntimeError('rclone is not installed')
+
+    rclone_remote = os.getenv('RCLONE_REMOTE_CONFIG', None)
+
+    if rclone_remote is None:
+        raise RuntimeError('RCLONE_REMOTE_CONFIG is not set')
+
+    if destination is None:
+        destination = os.getenv('TMPDIR', os.path.expanduser('~'))
+        destination = os.path.join(destination, os.path.basename(source))
+
+    flags = '--progress' if verbose else ''
+    flags = f'{flags} --exclude={exclude}' if exclude else flags
+
+    start = time.time()
+    command = f'rclone copyto {rclone_remote}:{source} {destination} {flags}'
+
+    subprocess.run(command, shell=True, check=True)
+    print(f'Downloaded {source} to {destination} in {time.time() - start:.2f} seconds')
+
+    return destination
 
 
 def process(
@@ -99,7 +173,8 @@ def run(self,
         os.makedirs("results", exist_ok=True)
 
         process(model, tokenizer, ds['train'], max_tokens, retriever_max_length, sampling_params, "train")
-
+        print("uploading")
+        upload("results", output)
 
 
 
