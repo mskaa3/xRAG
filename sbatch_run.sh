@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=this-is-fine     # nazwa
+#SBATCH --job-name=xRAG     # nazwa
 #SBATCH --nodes=1                   # ilość węzłów
 #SBATCH --cpus-per-gpu=4            # ilość cpu na zadanie
-#SBATCH --time=80:00:00             # maksymalny czas wykonania zadania
+#SBATCH --time=4:00:00             # maksymalny czas wykonania zadania
 #SBATCH --mem=256gb                 # ilość pamięci RAM
-#SBATCH -p H100                     # partycja
+#SBATCH -p lem-gpu                     # partycja
 #SBATCH --gres=gpu:hopper:4          # (ilość kart graficznych na węźle)
 #SBATCH --verbose                   # wyświetlanie informacji o zadaniu
 #SBATCH --exclude=r10-7

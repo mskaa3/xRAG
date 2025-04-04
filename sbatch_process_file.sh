@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=this-is-fine     # nazwa
+#SBATCH --job-name=xRAG     # nazwa
 #SBATCH --nodes=1                   # ilość węzłów
 #SBATCH --cpus-per-gpu=4            # ilość cpu na zadanie
-#SBATCH --time=80:00:00             # maksymalny czas wykonania zadania
+#SBATCH --time=4:00:00             # maksymalny czas wykonania zadania
 #SBATCH --mem=256gb                 # ilość pamięci RAM
-#SBATCH -p H100                     # partycja
+#SBATCH -p lem-gpu                     # partycja
 #SBATCH --gres=gpu:hopper:4          # (ilość kart graficznych na węźle)
 #SBATCH --verbose                   # wyświetlanie informacji o zadaniu
 #SBATCH --exclude=r10-7
@@ -16,9 +16,9 @@ export VLLM_WORKER_MULTIPROC_METHOD=spawn
 # MODEL
 # REMOTE_MODEL=s3min-tomasznaskret-1712063354/alignment/models/pllum-7b-v1-chat-v5
 # # PROMPTS
-REMOTE_DATA=s3min-tomasznaskret-1712063354/alignment/data/pllum-pref-rv7-pl
+REMOTE_DATA=s3min-tomasznaskret-1712063354/user/jmoska/xRAG_test_data
 # # THIS IS SET AUTOMATICALLY BY THE SCRIPT
-REMOTE_OUTPUT=s3min-tomasznaskret-1712063354/alignment/dataset-prepare/test
+REMOTE_OUTPUT=s3min-tomasznaskret-1712063354/user/jmoska/xRAG_test_data/result
 
 # RCLONE CONFIG NAME
 export RCLONE_REMOTE_CONFIG=s3v2
@@ -33,7 +33,7 @@ export APPTAINER_TMPDIR=$TMPDIR/apptainer/
 export APPTAINER_CACHEDIR=$TMPDIR/apptainer/
 export APPTAINER_TRANSFORMERS_CACHE=$APPTAINER_TMPDIR
 
-GENERATOR="python3 process_files.py \
+GENERATOR="python3 process_files.py run\
   --temperature 0.1 \
   --max_tokens 2048 \
   --data $REMOTE_DATA \
