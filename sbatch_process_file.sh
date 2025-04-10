@@ -20,6 +20,8 @@ REMOTE_DATA=s3min-tomasznaskret-1712063354/user/jmoska/xRAG_test_data
 # # THIS IS SET AUTOMATICALLY BY THE SCRIPT
 REMOTE_OUTPUT=s3min-tomasznaskret-1712063354/user/jmoska/xRAG_test_data/result
 
+
+
 # RCLONE CONFIG NAME
 export RCLONE_REMOTE_CONFIG=s3v2
 
@@ -37,8 +39,11 @@ GENERATOR="python3 process_files.py run\
   --temperature 0.1 \
   --max_tokens 2048 \
   --data $REMOTE_DATA \
-  --retriever_max_length 8000 \
-  --output $REMOTE_OUTPUT"
+  --retriever_max_length 32000 \
+  --xrag_token True \
+  --output $REMOTE_OUTPUT \
+  --file_name \"result\" \
+  --save_format \"csv\" \
 
 # Execute in Apptainer (Singularity) container
 APPTAINER_TMPDIR=/dev/shm/$SLURM_JOB_ID APPTAINER_CACHEDIR=/dev/shm/$SLURM_JOB_ID \
