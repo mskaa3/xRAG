@@ -43,7 +43,7 @@ GENERATOR="python3 process_files.py run\
   --xrag_token True \
   --output $REMOTE_OUTPUT \
   --file_name \"result\" \
-  --save_format \"csv\" \
+  --save_format \"csv\" " \
 
 # Execute in Apptainer (Singularity) container
 APPTAINER_TMPDIR=/dev/shm/$SLURM_JOB_ID APPTAINER_CACHEDIR=/dev/shm/$SLURM_JOB_ID \
